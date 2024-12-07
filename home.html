@@ -394,10 +394,15 @@
             const resultadoTorneosGanados = document.getElementById('resultadoTorneosGanados');
             resultadoTorneosGanados.innerHTML = '';
 
-            data.forEach(equipo => {
-              const equipoInfo = `Equipo: ${equipo.nombre} - Torneos ganados: ${equipo.torneos_ganados}`;
-              resultadoTorneosGanados.innerHTML += `<p>${equipoInfo}</p>`;
-            });
+            // Asegurarse de que la respuesta tiene los datos correctos
+            if (Array.isArray(data) && data.length > 0) {
+              data.forEach(equipo => {
+                const equipoInfo = `Equipo: ${equipo.equipo} - Torneos ganados: ${equipo.torneos_ganados}`;
+                resultadoTorneosGanados.innerHTML += `<p>${equipoInfo}</p>`;
+              });
+            } else {
+              resultadoTorneosGanados.innerHTML = "<p>No se encontraron equipos.</p>";
+            }
           } catch (error) {
             console.error('Error al obtener los datos:', error);
             document.getElementById('resultadoTorneosGanados').textContent = "Error al obtener los datos.";
