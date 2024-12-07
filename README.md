@@ -15,8 +15,6 @@ Asegúrate de tener instalados los siguientes programas:
 - `index.js`: Archivo principal que inicia el servidor Node.js.  
 - `home.html`: Página principal del proyecto, diseñada con Bootstrap.  
 - `db.js`: Archivo de configuración para la conexión a la base de datos.  
-- `public/`: Carpeta para archivos estáticos como CSS y JS.  
-
 ## Cómo Ejecutar el Proyecto  
 en la terminal npm install && npm run dev
 y finalmente usar node index.js
