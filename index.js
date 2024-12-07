@@ -6,22 +6,19 @@ import sql from './db.js';
 const app = express();
 const port = 3000;
 
-// Ruta del archivo actual
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // Manejo de formularios
-
-// Servir archivos estaticos
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Ruta al home
 app.get('/', async (req, res) => {
   res.sendFile(path.join(__dirname, 'home.html'));
 });
 
 // ¿Cuantos jugadores se unieron en el ultimo mes?
+
 app.get('/consulta/jugadores-recientes', async (req, res) => {
   try {
     const result = await sql`
@@ -37,10 +34,11 @@ app.get('/consulta/jugadores-recientes', async (req, res) => {
 });
 
 // ¿Cual es el jugador con la mejor relacion K/D en un torneo especifico?
+
 app.get('/consulta/kd-torneo', async (req, res) => {
   try {
     const torneoId = req.query.torneoId;
-    console.log('Recibiendo torneoId:', torneoId); // Debugging
+    console.log('Recibiendo torneoId:', torneoId);
     if (!torneoId) {
       return res.status(400).send('El parametro "torneoId" es requerido.');
     }
@@ -57,7 +55,7 @@ app.get('/consulta/kd-torneo', async (req, res) => {
       ORDER BY kd_ratio DESC
       LIMIT 1;
     `;
-    console.log('Resultado de la consulta K/D:', result); // Debugging
+    console.log('Resultado de la consulta K/D:', result);
     if (result.length === 0) {
       return res.send('No se encontraron jugadores para el torneo especificado.');
     }
@@ -73,10 +71,11 @@ app.get('/consulta/kd-torneo', async (req, res) => {
 });
 
 // ¿Cuantos jugadores hay en un equipo especifico?
+
 app.get('/consulta/jugadores-equipo', async (req, res) => {
   try {
     const equipoId = req.query.equipoId;
-    console.log('Recibiendo equipoId:', equipoId); // Debugging
+    console.log('Recibiendo equipoId:', equipoId);
     if (!equipoId) {
       return res.status(400).send('El parametro "equipoId" es requerido.');
     }
@@ -86,7 +85,7 @@ app.get('/consulta/jugadores-equipo', async (req, res) => {
       FROM Jugador
       WHERE id_equipo = ${equipoId};
     `;
-    console.log('Resultado de la consulta jugadores-equipo:', result); // Debugging
+    console.log('Resultado de la consulta jugadores-equipo:', result);
     if (result.length === 0) {
       return res.send('No se encontraron jugadores para el equipo especificado.');
     }
@@ -99,9 +98,10 @@ app.get('/consulta/jugadores-equipo', async (req, res) => {
 });
 
 // ¿Cual es el equipo con mas logros?
+
 app.get('/consulta/equipo-mas-logros', async (req, res) => {
   try {
-    console.log('Consulta: Equipo con mas logros'); // Debugging
+    console.log('Consulta: Equipo con mas logros');
 
     const result = await sql`
       SELECT nombre, logros
@@ -110,14 +110,14 @@ app.get('/consulta/equipo-mas-logros', async (req, res) => {
       LIMIT 1;
     `;
 
-    console.log('Resultado de la consulta equipo-mas-logros:', result); // Debugging
+    console.log('Resultado de la consulta equipo-mas-logros:', result);
 
     if (result.length === 0) {
       return res.status(404).json({ message: 'No se encontraron equipos.' });
     }
 
     const equipo = result[0];
-    res.json(equipo); // Enviar respuesta como JSON
+    res.json(equipo);
   } catch (error) {
     console.error('Error en /consulta/equipo-mas-logros:', error);
     res.status(500).json({ message: 'Error al obtener los datos.' });
@@ -125,10 +125,10 @@ app.get('/consulta/equipo-mas-logros', async (req, res) => {
 });
 
 // ¿Cual es el porcentaje de victorias de los equipos en los ultimos 10 torneos?
+
 app.get('/consulta/porcentaje-victorias', async (req, res) => {
   try {
-    console.log('Consulta: Porcentaje de victorias en los ultimos 10 torneos'); // Debugging
-
+    console.log('Consulta: Porcentaje de victorias en los ultimos 10 torneos');
     const result = await sql`
       SELECT eq.nombre AS equipo, 
              COUNT(t.id_torneo)::FLOAT / 10 * 100 AS porcentaje_victorias
@@ -140,13 +140,13 @@ app.get('/consulta/porcentaje-victorias', async (req, res) => {
       LIMIT 10;
     `;
 
-    console.log('Resultado de la consulta porcentaje-victorias:', result); // Debugging
+    console.log('Resultado de la consulta porcentaje-victorias:', result);
 
     if (result.length === 0) {
       return res.status(404).json({ message: 'No se encontraron equipos con victorias.' });
     }
 
-    res.json(result); // Enviar respuesta como JSON
+    res.json(result);
   } catch (error) {
     console.error('Error en /consulta/porcentaje-victorias:', error);
     res.status(500).json({ message: 'Error al obtener los datos.' });
@@ -155,9 +155,10 @@ app.get('/consulta/porcentaje-victorias', async (req, res) => {
 
 
 // ¿Cual es el porcentaje de victorias de los equipos en los ultimos 10 torneos?
+
 app.get('/consulta/porcentaje-victorias', async (req, res) => {
   try {
-    console.log('Consulta: Porcentaje de victorias en los ultimos 10 torneos'); // Debugging
+    console.log('Consulta: Porcentaje de victorias en los ultimos 10 torneos');
 
     const result = await sql`
       SELECT eq.nombre AS equipo, 
@@ -170,13 +171,13 @@ app.get('/consulta/porcentaje-victorias', async (req, res) => {
       LIMIT 10;
     `;
 
-    console.log('Resultado de la consulta porcentaje-victorias:', result); // Debugging
+    console.log('Resultado de la consulta porcentaje-victorias:', result);
 
     if (result.length === 0) {
       return res.status(404).json({ message: 'No se encontraron equipos con victorias.' });
     }
 
-    res.json(result); // Enviar respuesta como JSON
+    res.json(result);
   } catch (error) {
     console.error('Error en /consulta/porcentaje-victorias:', error);
     res.status(500).json({ message: 'Error al obtener los datos.' });
@@ -184,6 +185,7 @@ app.get('/consulta/porcentaje-victorias', async (req, res) => {
 });
 
 // ¿Cuantos torneos ha ganado cada equipo?
+
 app.get('/consulta/torneos-ganados', async (req, res) => {
   try {
     const result = await sql`
@@ -199,7 +201,7 @@ app.get('/consulta/torneos-ganados', async (req, res) => {
       return res.status(404).json({ message: 'No se encontraron equipos con torneos ganados.' });
     }
 
-    res.json(result); // Enviar respuesta como JSON
+    res.json(result);
   } catch (error) {
     console.error('Error en /consulta/torneos-ganados:', error);
     res.status(500).json({ message: 'Error al obtener los datos.' });
@@ -208,9 +210,10 @@ app.get('/consulta/torneos-ganados', async (req, res) => {
 
 
 // ¿Que equipo tiene el mayor numero de miembros?
+
 app.get('/consulta/equipo-mas-miembros', async (req, res) => {
   try {
-    console.log('Consulta: Equipo con mas miembros'); // Debugging
+    console.log('Consulta: Equipo con mas miembros');
 
     const result = await sql`
       SELECT eq.nombre AS equipo, COUNT(j.id_jugador) AS numero_miembros
@@ -221,14 +224,14 @@ app.get('/consulta/equipo-mas-miembros', async (req, res) => {
       LIMIT 1;
     `;
 
-    console.log('Resultado de la consulta equipo-mas-miembros:', result); // Debugging
+    console.log('Resultado de la consulta equipo-mas-miembros:', result);
 
     if (result.length === 0) {
       return res.status(404).json({ message: 'No se encontraron equipos.' });
     }
 
     const equipo = result[0];
-    res.json(equipo); // Enviar respuesta como JSON
+    res.json(equipo);
   } catch (error) {
     console.error('Error en /consulta/equipo-mas-miembros:', error);
     res.status(500).json({ message: 'Error al obtener los datos.' });
@@ -236,6 +239,7 @@ app.get('/consulta/equipo-mas-miembros', async (req, res) => {
 });
 
 // ¿Cuantos torneos ha ganado cada equipo?
+
 app.get('/consulta/torneos-ganados', async (req, res) => {
   try {
     const result = await sql`
@@ -254,6 +258,7 @@ app.get('/consulta/torneos-ganados', async (req, res) => {
 });
 
 // ¿Porcentaje de victorias en cada mapa por un equipo en un torneo?
+
 app.get('/consulta/porcentaje-victorias-mapas', async (req, res) => {
   try {
     const equipoId = req.query.equipoId;
@@ -282,6 +287,7 @@ app.get('/consulta/porcentaje-victorias-mapas', async (req, res) => {
 });
 
 // ¿Que mapa fue mas usado en un torneo especifico?
+
 app.get('/consulta/mapa-mas-usado', async (req, res) => {
   try {
     const torneoId = req.query.torneoId;
@@ -312,5 +318,3 @@ app.get('/consulta/mapa-mas-usado', async (req, res) => {
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
 });
-
-//dhjsdjfhjdsfdsf
