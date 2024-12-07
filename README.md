@@ -18,4 +18,5 @@ Asegúrate de tener instalados los siguientes programas:
 - `public/`: Carpeta para archivos estáticos como CSS y JS.  
 
 ## Cómo Ejecutar el Proyecto  
-en la terminal usar node index.js.
+en la terminal npm install && npm run dev
+y finalmente usar node index.js
