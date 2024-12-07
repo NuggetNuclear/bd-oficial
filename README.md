@@ -1,6 +1,6 @@
 # Valorant INSIDE  
 
-**Valorant INSIDE** es una plataforma web diseñada para proporcionar información detallada y estadísticas sobre torneos, equipos y jugadores del mundo competitivo de Valorant.  
+**Valorant INSIDE** es una plataforma web diseñada para proporcionar información detallada y estadísticas sobre torneos, equipos y jugadores de Valorant.  
 
 ## Características  
 - Consultar estadísticas de jugadores, equipos y torneos.  
