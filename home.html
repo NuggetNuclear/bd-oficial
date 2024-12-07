@@ -165,27 +165,19 @@
                     <p id="resultadoMapaMasUsado"></p>
                   </li>
                   <li>
-                    ¿Que porcentaje de partidas gano un equipo en cada mapa en un torneo?
-                    <form id="consultaPorcentajeVictoriasMapasForm" method="GET" class="d-inline">
-                      <label for="torneoIdMapas" class="text-warning">ID del Torneo:</label>
+                    ¿Qué equipo ganó más partidas en un torneo específico?
+                    <form id="consultaEquipoMasPartidasForm" method="GET" class="d-inline">
+                      <label for="torneoIdMasPartidas" class="text-warning">ID del Torneo:</label>
                       <input
                         type="text"
-                        id="torneoIdMapas"
-                        name="torneoIdMapas"
-                        required
-                        class="form-control d-inline w-auto mb-2"
-                      />
-                      <label for="equipoIdMapas" class="text-warning">ID del Equipo:</label>
-                      <input
-                        type="text"
-                        id="equipoIdMapas"
-                        name="equipoIdMapas"
+                        id="torneoIdMasPartidas"
+                        name="torneoIdMasPartidas"
                         required
                         class="form-control d-inline w-auto mb-2"
                       />
                       <button class="btn btn-sm btn-warning">Consultar</button>
                     </form>
-                    <p id="resultadoPorcentajeMapas"></p>
+                    <p id="resultadoEquipoMasPartidas"></p>
                   </li>
                 </ul>
               </div>
@@ -267,10 +259,15 @@
           e.preventDefault();
           try {
             const response = await fetch('/consulta/equipo-mas-logros');
+
+            // Verifica si la respuesta es JSON
             if (!response.ok) {
               throw new Error('Error en la respuesta del servidor');
             }
-            const data = await response.json(); 
+
+            const data = await response.json(); // Procesa como JSON
+
+            // Actualiza el contenido del parrafo con los datos recibidos
             document.getElementById(
               'resultadoEquipoLogros'
             ).textContent = `El equipo con mas logros es ${data.nombre} con ${data.logros} logros.`;
@@ -287,15 +284,19 @@
           e.preventDefault();
           try {
             const response = await fetch('/consulta/porcentaje-victorias');
+
+            // Verifica si la respuesta es JSON
             if (!response.ok) {
               throw new Error('Error en la respuesta del servidor');
             }
 
-            const data = await response.json();
+            const data = await response.json(); // Procesa la respuesta como JSON
+
+            // Actualiza el contenido del parrafo con los datos recibidos
             const resultadoPorcentajeVictorias = document.getElementById(
               'resultadoPorcentajeVictorias'
             );
-            resultadoPorcentajeVictorias.innerHTML = '';
+            resultadoPorcentajeVictorias.innerHTML = ''; // Limpia resultados previos
 
             data.forEach((equipo) => {
               const equipoInfo = `Equipo: ${
@@ -324,11 +325,13 @@
               throw new Error('Error en la respuesta del servidor');
             }
 
-            const data = await response.json();
+            const data = await response.json(); // Procesa como JSON
+
+            // Actualiza el contenido del parrafo con los datos recibidos
             const resultadoTorneosGanados = document.getElementById(
               'resultadoTorneosGanados'
             );
-            resultadoTorneosGanados.innerHTML = '';
+            resultadoTorneosGanados.innerHTML = ''; // Limpia resultados previos
 
             data.forEach((equipo) => {
               const equipoInfo = `Equipo: ${equipo.equipo} - Torneos ganados: ${equipo.torneos_ganados}`;
@@ -347,11 +350,15 @@
           e.preventDefault();
           try {
             const response = await fetch('/consulta/equipo-mas-miembros');
+
+            // Verifica si la respuesta es JSON
             if (!response.ok) {
               throw new Error('Error en la respuesta del servidor');
             }
 
-            const data = await response.json();
+            const data = await response.json(); // Procesa como JSON
+
+            // Actualiza el contenido del parrafo con los datos recibidos
             document.getElementById(
               'resultadoEquipoMasMiembros'
             ).textContent = `El equipo con mas miembros es ${data.equipo} con ${data.numero_miembros} miembros.`;
@@ -361,6 +368,8 @@
               'Error al obtener los datos.';
           }
         });
+
+        // Consulta de torneos ganados por equipo
       document
         .getElementById('consultaTorneosGanadosForm')
         .addEventListener('submit', async function (e) {
@@ -377,48 +386,20 @@
             const resultadoTorneosGanados = document.getElementById('resultadoTorneosGanados');
             resultadoTorneosGanados.innerHTML = '';
 
-            data.forEach(equipo => {
-              const equipoInfo = `Equipo: ${equipo.nombre} - Torneos ganados: ${equipo.torneos_ganados}`;
-              resultadoTorneosGanados.innerHTML += `<p>${equipoInfo}</p>`;
-            });
+            if (Array.isArray(data) && data.length > 0) {
+              data.forEach(equipo => {
+                const equipoInfo = `Equipo: ${equipo.equipo} - Torneos ganados: ${equipo.torneos_ganados}`;
+                resultadoTorneosGanados.innerHTML += `<p>${equipoInfo}</p>`;
+              });
+            } else {
+              resultadoTorneosGanados.innerHTML = "<p>No se encontraron equipos.</p>";
+            }
           } catch (error) {
             console.error('Error al obtener los datos:', error);
             document.getElementById('resultadoTorneosGanados').textContent = "Error al obtener los datos.";
           }
         });
-      document
-        .getElementById('consultaPorcentajeVictoriasMapasForm')
-        .addEventListener('submit', async function (e) {
-          e.preventDefault();
-          const torneoId = document.getElementById('torneoIdMapas').value.trim();
-          const equipoId = document.getElementById('equipoIdMapas').value.trim();
-          
-          if (!torneoId || !equipoId) {
-            alert("Por favor ingrese el ID del torneo y el equipo.");
-            return;
-          }
 
-          try {
-            const response = await fetch(`/consulta/porcentaje-victorias-mapas?torneoId=${torneoId}&equipoId=${equipoId}`);
-
-            if (!response.ok) {
-              throw new Error('Error en la respuesta del servidor');
-            }
-
-            const data = await response.json();
-
-            const resultadoPorcentajeMapas = document.getElementById('resultadoPorcentajeMapas');
-            resultadoPorcentajeMapas.innerHTML = '';
-
-            data.forEach(mapa => {
-              const mapaInfo = `Mapa: ${mapa.nombre_mapa} - Porcentaje de victorias: ${mapa.porcentaje_victorias.toFixed(2)}%`;
-              resultadoPorcentajeMapas.innerHTML += `<p>${mapaInfo}</p>`;
-            });
-          } catch (error) {
-            console.error('Error al obtener los datos:', error);
-            document.getElementById('resultadoPorcentajeMapas').textContent = "Error al obtener los datos.";
-          }
-        });
       document
         .getElementById('consultaMapaMasUsadoForm')
         .addEventListener('submit', async function (e) {
@@ -439,13 +420,52 @@
 
             const data = await response.json();
 
-            document.getElementById('resultadoMapaMasUsado').textContent =
-              `El mapa mas usado en el torneo es ${data.nombre_mapa} con ${data.veces_usado} usos.`;
+            if (data.length > 0) {
+              const mapa = data[0]; 
+              document.getElementById('resultadoMapaMasUsado').textContent =
+                `El mapa más usado en el torneo es ${mapa.mapa} con ${mapa.veces_usado} usos.`;
+            } else {
+              document.getElementById('resultadoMapaMasUsado').textContent = "No se encontraron resultados para el torneo especificado.";
+            }
           } catch (error) {
             console.error('Error al obtener los datos:', error);
             document.getElementById('resultadoMapaMasUsado').textContent = "Error al obtener los datos.";
           }
         });
+
+        document
+          .getElementById('consultaEquipoMasPartidasForm')
+          .addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const torneoId = document.getElementById('torneoIdMasPartidas').value.trim();
+
+            if (!torneoId) {
+              alert("Por favor ingrese el ID del torneo.");
+              return;
+            }
+
+            try {
+              const response = await fetch(`/consulta/equipo-mas-partidas-ganadas?torneoId=${torneoId}`);
+
+              if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor');
+              }
+
+              const data = await response.json();
+
+              if (data.message) {
+                document.getElementById('resultadoEquipoMasPartidas').textContent = data.message;
+                return;
+              }
+
+              document.getElementById('resultadoEquipoMasPartidas').innerHTML = 
+                `El equipo que ganó más partidas en el torneo es: ${data[0].equipo} con ${data[0].partidas_ganadas} partidas ganadas.`;
+            } catch (error) {
+              console.error('Error al obtener los datos:', error);
+              document.getElementById('resultadoEquipoMasPartidas').textContent = "Error al obtener los datos.";
+            }
+          });
+
 
           </script>
           <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
